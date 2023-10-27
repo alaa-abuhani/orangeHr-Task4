@@ -1,7 +1,13 @@
 import login from "../../support/PageObject/login";
 import vacancy from "../../support/PageObject/vacancy";
-
+import employee from "../../support/API/addEmpAPI/addEmpAPI";
+import GenericHepler from "../../support/helpers/genericFunctions";
 const loginObj: login = new login();
+const empObj: employee = new employee();
+let firstName = "alaa" + GenericHepler.GenericRandomString();
+let userId = "100" + GenericHepler.GenericRandomString();
+let password = "123456a";
+let empNumber;
 const vacancyObj: vacancy = new vacancy();
 let vacancyId: string;
 let vacancyName;
@@ -11,44 +17,55 @@ const path = "cypress/fixtures/alaa.txt";
 describe("vacancy functionality ", () => {
   beforeEach(() => {
     cy.intercept("/web/index.php/dashboard/index").as("loginpage");
-    cy.visit("https://opensource-demo.orangehrmlive.com");
+    cy.visit("/");
     cy.fixture("login.json").as("logininfo");
-    cy.fixture("candidateInfo.json").as("candidateInfo");
+    cy.fixture("employeeInfo.json").as("EmpInfo");
     cy.get("@logininfo").then((logininfo: any) => {
       loginObj.loginValid(logininfo[0].Username, logininfo[0].Password);
-    });
-    vacancyObj.Vacany();
-    const orangeHrVacancyAPIEndPoint =
-      "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies";
-    const vacancyNewData = {
-      name: "test",
-      jobTitleId: 22,
-      employeeId: 55,
-      numOfPositions: null,
-      description: "test join our team engineer",
-      status: true,
-      isPublished: true,
-    };
-    cy.request({
-      method: "POST",
-      url: orangeHrVacancyAPIEndPoint,
-      body: vacancyNewData,
-    }).then((response) => {
-      vacancyId = response.body.data.id;
-      vacancyName = response.body.data.name;
-      console.log(response.body.data.id, "id");
-      console.log(response.body.data.name, "name");
-      console.log(response, "ADD VACANCY API RESPONSE");
-      cy.log(
-        "****************Add Vacancy Succefully***************",
-        vacancyId,
-        vacancyName
-      );
+      // add employee account
+      cy.get("@EmpInfo").then((EmpInfo: any) => {
+        empObj
+          .addEmloyeeViaAPI(
+            firstName,
+            EmpInfo.user.middleName,
+            EmpInfo.user.lastName,
+            EmpInfo.user.empPicture,
+            userId,
+            EmpInfo.user.password
+          )
+          .then((response) => {
+            empNumber = response.body.data.employee.empNumber;
+
+            vacancyObj.Vacany();
+            const orangeHrVacancyAPIEndPoint = "/api/v2/recruitment/vacancies";
+            const vacancyNewData = {
+              name: "test",
+              jobTitleId: 22,
+              employeeId: empNumber,
+              numOfPositions: null,
+              description: "test join our team engineer",
+              status: true,
+              isPublished: true,
+            };
+            cy.request({
+              method: "POST",
+              url: orangeHrVacancyAPIEndPoint,
+              body: vacancyNewData,
+            }).then((response) => {
+              vacancyId = response.body.data.id;
+              vacancyName = response.body.data.name;
+              cy.log(
+                "****************Add Vacancy Succefully***************",
+                vacancyId,
+                vacancyName
+              );
+            });
+          });
+      });
     });
   });
   afterEach(() => {
-    const DeleteVacancyAPIEndPiont =
-      "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies";
+    const DeleteVacancyAPIEndPiont = "/api/v2/recruitment/vacancies";
     const vacanyData = {
       ids: [vacancyId],
     };
@@ -65,7 +82,7 @@ describe("vacancy functionality ", () => {
   it("vacancy: add attachment text file", () => {
     cy.request({
       method: "GET",
-      url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies?limit=0",
+      url: "/api/v2/recruitment/vacancies?limit=0",
     }).then((response) => {
       console.log(response, "GET response");
       lastRow = response.body.meta.total;
