@@ -32,7 +32,7 @@ describe("add employee via API", () => {
           )
           .then((response) => {
             empNumber = response.body.data.employee.empNumber;
-            console.log(empNumber, "ggg");
+            cy.log(empNumber, "ggg");
             // add leave Entitlements for that employee
             cy.log(empNumber);
             leave.adminAddLeaveEntitlements(empNumber);
@@ -53,6 +53,7 @@ describe("add employee via API", () => {
       //admin login
       cy.visit("/");
       cy.get("@logininfo").then((logininfo: any) => {
+        // admin login
         loginObj.loginValid(logininfo[0].Username, logininfo[0].Password);
         // admin aprrove reject leave
         leave.adminAprroveRejectLeave(id).then((response) => {
@@ -60,9 +61,9 @@ describe("add employee via API", () => {
           cy.logout();
           cy.visit("/");
           // user login
-          loginObj.loginValid(firstName, "123456a");
+          loginObj.loginValid(firstName, password);
           cy.visit("/leave/viewMyLeaveList", { timeout: 3000 });
-          // check leave status
+          //uset check leave status
           leave.leaveAssertion();
         });
       });
