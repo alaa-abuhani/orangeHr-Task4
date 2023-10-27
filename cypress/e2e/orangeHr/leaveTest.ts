@@ -65,12 +65,6 @@ describe("add employee via API", () => {
           cy.visit("/leave/viewMyLeaveList", { timeout: 3000 });
           //uset check leave status
           leave.leaveAssertion();
-          // user logout
-          // cy.logout();
-          // cy.visit("/");
-          // // admin login
-          // loginObj.loginValid(logininfo[0].Username, logininfo[0].Password);
-  
         });
       });
     });
