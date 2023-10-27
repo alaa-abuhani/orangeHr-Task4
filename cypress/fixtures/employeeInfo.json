@@ -1,0 +1,26 @@
+{
+  "user": {
+    "id": "100",
+    "firstName": "alaa",
+    "middleName": "ghaleb",
+    "lastName": "abuhani",
+    "empPicture": null,
+    "password": "123456a",
+    "maritalStatus": "Married",
+    "nationality": "Armenian",
+    "licenseExpiryDate": "Today",
+    "dateOfBirth": "Today",
+    "gender": "male",
+    "subUnit": "Administration",
+    "jobTitle": "Content Specialist",
+    "empStatus": "Freelance"
+  },
+  "supervisor": {
+    "id": "123test",
+    "firstName": "heba",
+    "middleName": "ahamd",
+    "lastName": "mohammad",
+    "empPicture": null,
+    "reportOption": "Indirect"
+  }
+}
