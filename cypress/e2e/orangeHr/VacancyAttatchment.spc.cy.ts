@@ -1,4 +1,3 @@
-
 import login from "../../support/PageObject/login";
 import vacancy from "../../support/PageObject/vacancy";
 
@@ -63,7 +62,7 @@ describe("vacancy functionality ", () => {
     });
   });
 
-  it("vacancy: add attachment text file ", () => {
+  it("vacancy: add attachment text file", () => {
     cy.request({
       method: "GET",
       url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies?limit=0",
